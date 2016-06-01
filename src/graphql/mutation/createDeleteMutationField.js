@@ -2,7 +2,7 @@ import { fromPairs } from 'lodash'
 import { $$rowTable } from '../../symbols.js'
 import SQLBuilder from '../../SQLBuilder.js'
 import getType from '../getType.js'
-import createTableType from '../createTableType.js'
+import { toID } from '../types.js'
 import getPayloadInterface from './getPayloadInterface.js'
 import getPayloadFields from './getPayloadFields.js'
 import { inputClientMutationId } from './clientMutationId.js'
@@ -10,6 +10,7 @@ import { inputClientMutationId } from './clientMutationId.js'
 import {
   GraphQLNonNull,
   GraphQLObjectType,
+  GraphQLID,
   GraphQLInputObjectType,
 } from 'graphql'
 
@@ -57,14 +58,24 @@ const createPayloadType = table =>
     description: `Contains the ${table.getMarkdownTypeName()} node deleted by the mutation.`,
     interfaces: [getPayloadInterface(table.schema)],
     fields: {
-      [table.getFieldName()]: {
-        type: createTableType(table),
-        description: `The deleted ${table.getMarkdownTypeName()}.`,
-        resolve: source => source.output,
+      [`deleted${table.getTypeName()}Id`]: {
+        type: GraphQLID,
+        description: `The deleted ${table.getMarkdownTypeName()} id.`,
+        resolve: resolveDeletedFieldId(table),
       },
       ...getPayloadFields(table.schema),
     },
   })
+
+// Resolves the an opaque id from the primary keys of the deleted resource
+const resolveDeletedFieldId = table => ({ output }) => {
+  if (!output)
+    return null 
+
+  const primaryKeys = table.getPrimaryKeys()
+  const deletedIds = primaryKeys.map(pkey => output[pkey.name])
+  return toID(table.name, deletedIds)
+}
 
 const resolveDelete = table => {
   const primaryKeys = table.getPrimaryKeys()

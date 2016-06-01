@@ -2,45 +2,31 @@
   "data": {
     "a": {
       "clientMutationId": null,
-      "thing": {
-        "rowId": 1,
-        "note": "hello"
-      }
+      "deletedThingId": "dGhpbmc6MQ=="
     },
     "b": {
       "clientMutationId": null,
-      "thing": {
-        "rowId": 2,
-        "note": "world"
-      }
+      "deletedThingId": "dGhpbmc6Mg=="
     },
     "c": {
       "clientMutationId": null,
-      "thing": null
+      "deletedThingId": null
     },
     "d": {
-      "relation": {
-        "aThingId": 4,
-        "bThingId": 3
-      }
+      "clientMutationId": null,
+      "deletedRelationId": "cmVsYXRpb246NCwz"
     },
     "e": {
       "clientMutationId": "hello",
-      "thing": {
-        "rowId": 4,
-        "note": "bar"
-      }
+      "deletedThingId": "dGhpbmc6NA=="
     },
     "f": {
       "clientMutationId": "yolo",
-      "thing": {
-        "rowId": 6,
-        "note": "bux"
-      }
+      "deletedThingId": "dGhpbmc6Ng=="
     },
     "g": {
       "clientMutationId": null,
-      "thing": null
+      "deletedThingId": null
     }
   }
 }
