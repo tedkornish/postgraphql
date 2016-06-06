@@ -70,7 +70,7 @@ const createPayloadType = table =>
 // Resolves the an opaque id from the primary keys of the deleted resource
 const resolveDeletedFieldId = table => ({ output }) => {
   if (!output)
-    return null 
+    return null
 
   const primaryKeys = table.getPrimaryKeys()
   const deletedIds = primaryKeys.map(pkey => output[pkey.name])

@@ -2,34 +2,43 @@
   "data": {
     "a": {
       "clientMutationId": null,
-      "thing": {
-        "id": "dGhpbmc6OA==",
-        "rowId": 8,
-        "note": "a"
+      "thingEdge": {
+        "cursor": "OA==",
+        "node": {
+          "id": "dGhpbmc6OA==",
+          "note": "a",
+          "rowId": 8
+        }
       }
     },
     "b": {
       "clientMutationId": "hello",
-      "thing": {
-        "id": "dGhpbmc6OQ==",
-        "rowId": 9,
-        "note": "b"
+      "thingEdge": {
+        "cursor": "OQ==",
+        "node": {
+          "id": "dGhpbmc6OQ==",
+          "note": "b",
+          "rowId": 9
+        }
       }
     },
     "c": {
       "clientMutationId": null,
-      "relation": {
-        "aThingId": 8,
-        "bThingId": 9,
-        "thingByAThingId": {
-          "id": "dGhpbmc6OA==",
-          "rowId": 8,
-          "note": "a"
-        },
-        "thingByBThingId": {
-          "id": "dGhpbmc6OQ==",
-          "rowId": 9,
-          "note": "b"
+      "relationEdge": {
+        "cursor": "OCw5",
+        "node": {
+          "aThingId": 8,
+          "bThingId": 9,
+          "thingByAThingId": {
+            "id": "dGhpbmc6OA==",
+            "note": "a",
+            "rowId": 8
+          },
+          "thingByBThingId": {
+            "id": "dGhpbmc6OQ==",
+            "note": "b",
+            "rowId": 9
+          }
         }
       }
     }

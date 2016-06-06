@@ -3,8 +3,10 @@ import { $$rowTable } from '../../symbols.js'
 import SQLBuilder from '../../SQLBuilder.js'
 import getColumnType from '../getColumnType.js'
 import createTableType from '../createTableType.js'
+import { createTableEdgeType } from '../createConnectionType.js'
 import getPayloadInterface from './getPayloadInterface.js'
 import getPayloadFields from './getPayloadFields.js'
+import { createTableOrderingEnum } from '../createConnectionArgs.js'
 import { inputClientMutationId } from './clientMutationId.js'
 
 import {
@@ -39,6 +41,7 @@ const createInputType = table =>
   new GraphQLInputObjectType({
     name: `Insert${table.getTypeName()}Input`,
     description: `The ${table.getMarkdownTypeName()} to insert.`,
+
     fields: {
       ...fromPairs(
         table.getColumns().map(column => [column.getFieldName(), {
@@ -60,11 +63,44 @@ const createPayloadType = table =>
       [table.getFieldName()]: {
         type: createTableType(table),
         description: `The inserted ${table.getMarkdownTypeName()}.`,
-        resolve: source => source.output,
+        resolve: ({ output }) => output,
       },
+
+      [`${table.getFieldName()}Edge`]: {
+        type: createTableEdgeType(table),
+        args: {
+          orderBy: {
+            type: createTableOrderingEnum(table),
+          },
+        },
+        description: 'An edge to be inserted in a connection with help of the containing cursor.',
+        resolve: resolveNewEdge(table),
+      },
+
       ...getPayloadFields(table.schema),
     },
   })
+
+const resolveNewEdge = table => ({ output }, { orderBy }) => {
+  // See http://stackoverflow.com/a/32615799/1140494
+  let cursor = null
+
+  // if the edge field was handed an orderBy argument we use
+  // this as the cursor
+  if (orderBy) {
+    cursor = output[orderBy]
+  }
+  // if orderBy is not present use the primary keys of the table
+  else {
+    const primaryKeys = table.getPrimaryKeys()
+    cursor = primaryKeys.map(column => output[column.name])
+  }
+
+  return {
+    cursor,
+    node: output,
+  }
+}
 
 const resolveInsert = table => {
   // Note that using `DataLoader` here would not make very minor performance
@@ -96,7 +132,6 @@ const resolveInsert = table => {
 
     const output = row ? (row[$$rowTable] = table, row) : null
 
-    // Return the first (and likely only) row.
     return {
       output,
       clientMutationId,
